@@ -1,0 +1,15 @@
+--- #YAML:1.0
+name:                MP4-File
+version:             0.01
+abstract:            Read/Write MP4 files
+license:             ~
+author:              
+    - Marcus Holland-Moritz <mhx@cpan.org>
+generated_by:        ExtUtils::MakeMaker version 6.42
+distribution_type:   module
+requires:     
+    Encode:                        1.75
+    Test::More:                    0.45
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3

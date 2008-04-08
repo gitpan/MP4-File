@@ -1,0 +1,15 @@
+Changes
+File.xs
+lib/MP4/File.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+ppport.h
+README
+t/mp4file.t
+t/pod.t
+t/podcov.t
+test.m4a
+TODO
+typemap
+META.yml                                 Module meta-data (added by MakeMaker)
