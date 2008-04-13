@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 2 $
+#  $Revision: 3 $
 #  $Author: mhx $
-#  $Date: 2008/04/08 08:04:15 +0200 $
+#  $Date: 2008/04/13 14:03:21 +0200 $
 #
 ################################################################################
 # 
@@ -26,8 +26,26 @@ WriteMakefile(
   NAME          => 'MP4::File',
   VERSION_FROM  => 'lib/MP4/File.pm',
   PREREQ_PM     => \%prereq,
-  AUTHOR        => 'Marcus Holland-Moritz <mhx@cpan.org>',
   LIBS          => ['-lmp4v2'],
   ABSTRACT_FROM => 'lib/MP4/File.pm',
   realclean     => { FILES => 'copy.m4a' },
+  CONFIGURE     => \&configure,
 );
+
+sub configure
+{
+  my @moreopts;
+
+  if (eval $ExtUtils::MakeMaker::VERSION >= 6) {
+    push @moreopts, AUTHOR => 'Marcus Holland-Moritz <mhx@cpan.org>',
+                    ABSTRACT_FROM => 'lib/MP4/File.pm';
+  }
+
+  if (eval $ExtUtils::MakeMaker::VERSION >= 6.30_01) {
+    print "Setting license tag...\n";
+    push @moreopts, LICENSE => 'perl';
+  }
+
+  return { @moreopts };
+}
+

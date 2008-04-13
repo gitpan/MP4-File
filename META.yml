@@ -1,11 +1,11 @@
 --- #YAML:1.0
 name:                MP4-File
-version:             0.01
+version:             0.02
 abstract:            Read/Write MP4 files
-license:             ~
+license:             perl
 author:              
     - Marcus Holland-Moritz <mhx@cpan.org>
-generated_by:        ExtUtils::MakeMaker version 6.42
+generated_by:        ExtUtils::MakeMaker version 6.44
 distribution_type:   module
 requires:     
     Encode:                        1.75
