@@ -22,7 +22,7 @@ use Exporter;
 
 @ISA = qw( Exporter );
 
-$VERSION = do { my @r = '$Snapshot: /MP4-File/0.03 $' =~ /(\d+\.\d+(?:_\d+)?)/; @r ? $r[0] : '9.99' };
+$VERSION = do { my @r = '$Snapshot: /MP4-File/0.04 $' =~ /(\d+\.\d+(?:_\d+)?)/; @r ? $r[0] : '9.99' };
 $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 

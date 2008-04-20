@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 4 $
+#  $Revision: 5 $
 #  $Author: mhx $
-#  $Date: 2008/04/20 17:33:52 +0200 $
+#  $Date: 2008/04/20 23:37:09 +0200 $
 #
 ################################################################################
 # 
@@ -93,7 +93,7 @@ sub test_compile
   $fh->print($code);
   undef $fh;
   my $obj = "$base$Config{obj_ext}";
-  my $ok = not system $Config{make}, $obj;
+  my $ok = not system "$Config{cc} $Config{ccflags} -o $obj $file";
   unlink $file, $obj;
   return $ok;
 }
