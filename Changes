@@ -1,4 +1,27 @@
 -------------------------
+Version 0.03 (2008-04-20)
+-------------------------
+
+* make Makefile.PL check for C compiler and libmp4v2
+  header file
+
+* add the following methods:
+
+   Info
+   FileInfo
+   Optimize
+   GetMetadataCoverArtCount
+   DeleteMetadataFreeForm
+   GetMetadataFreeForm
+   SetMetadataFreeForm
+
+* add rudimentary documentation
+
+* enable POD coverage testing
+
+* add more tests
+
+-------------------------
 Version 0.02 (2008-04-13)
 -------------------------
 

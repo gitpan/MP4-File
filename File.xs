@@ -1,8 +1,8 @@
 /*******************************************************************************
 *
-*  $Revision: 2 $
+*  $Revision: 3 $
 *  $Author: mhx $
-*  $Date: 2008/04/08 08:04:14 +0200 $
+*  $Date: 2008/04/20 17:31:19 +0200 $
 *
 ********************************************************************************
 *
@@ -102,6 +102,49 @@ MP4FILE::Modify(fileName, verbosity = 0, flags = 0)
     THIS->fh = MP4Modify(fileName, verbosity, flags);
 
     RETVAL = MP4_IS_VALID_FILE_HANDLE(THIS->fh);
+
+  OUTPUT:
+    RETVAL
+
+const char *
+MP4FILE::Info(trackId = MP4_INVALID_TRACK_ID)
+    MP4TrackId trackId;
+
+  CODE:
+    RETVAL = MP4Info(THIS->fh, trackId);
+
+    if (RETVAL == NULL)
+    {
+      XSRETURN_UNDEF;
+    }
+
+  OUTPUT:
+    RETVAL
+
+const char *
+FileInfo(classname, fileName, trackId = MP4_INVALID_TRACK_ID)
+    const char *fileName;
+    MP4TrackId trackId;
+
+  CODE:
+    RETVAL = MP4FileInfo(fileName, trackId);
+
+    if (RETVAL == NULL)
+    {
+      XSRETURN_UNDEF;
+    }
+
+  OUTPUT:
+    RETVAL
+
+bool
+Optimize(classname, fileName, newFileName = NULL, verbosity = 0)
+    const char *fileName;
+    const char *newFileName;
+    u_int32_t verbosity;
+
+  CODE:
+    RETVAL = MP4Optimize(fileName, newFileName, verbosity);
 
   OUTPUT:
     RETVAL
@@ -297,6 +340,14 @@ MP4FILE::SetMetadataName(value)
   OUTPUT:
     RETVAL
 
+UV
+MP4FILE::GetMetadataCoverArtCount()
+  CODE:
+    RETVAL = MP4GetMetadataCoverArtCount(THIS->fh);
+
+  OUTPUT:
+    RETVAL
+
 void
 MP4FILE::GetMetadataCoverArt()
   PREINIT:
@@ -393,7 +444,7 @@ MP4FILE::GetMetadataTempo()
 
 bool
 MP4FILE::SetMetadataTempo(tempo)
-    u_int16_t tempo;
+    u_int16_t tempo
 
   CODE:
     RETVAL = MP4SetMetadataTempo(THIS->fh, tempo);
@@ -419,10 +470,61 @@ MP4FILE::GetMetadataCompilation()
 
 bool
 MP4FILE::SetMetadataCompilation(cpl)
-    bool cpl;
+    bool cpl
 
   CODE:
     RETVAL = MP4SetMetadataCompilation(THIS->fh, cpl);
+
+  OUTPUT:
+    RETVAL
+
+bool
+MP4FILE::DeleteMetadataFreeForm(name)
+    char *name
+
+  CODE:
+    RETVAL = MP4DeleteMetadataFreeForm(THIS->fh, name);
+
+  OUTPUT:
+    RETVAL
+
+void
+MP4FILE::GetMetadataFreeForm(name)
+    char *name
+
+  PREINIT:
+    u_int8_t *value;
+    u_int32_t size;
+
+  PPCODE:
+    if (MP4GetMetadataFreeForm(THIS->fh, name, &value, &size))
+    {
+      if (value != NULL)
+      {
+        ST(0) = newSVpvn(value, size);
+        free(value);
+      }
+      else
+      {
+        ST(0) = newSVpvn("", 0);
+      }
+
+      XSRETURN(1);
+    }
+
+    XSRETURN_UNDEF;
+
+bool
+MP4FILE::SetMetadataFreeForm(name, data)
+    char *name
+    SV *data
+
+  PREINIT:
+    STRLEN size;
+    u_int8_t *value = SvPV(data, size);
+
+  CODE:
+    RETVAL = MP4SetMetadataFreeForm(THIS->fh, name, value, size);
 
   OUTPUT:
     RETVAL

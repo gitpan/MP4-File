@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 2 $
+#  $Revision: 3 $
 #  $Author: mhx $
-#  $Date: 2008/04/08 08:03:52 +0200 $
+#  $Date: 2008/04/20 17:31:48 +0200 $
 #
 ################################################################################
 # 
@@ -12,7 +12,7 @@
 # 
 ################################################################################
 
-use Test::More tests => 39;
+use Test::More tests => 52;
 use File::Spec;
 use File::Copy;
 use Encode qw(encode decode);
@@ -40,12 +40,25 @@ checkmeta($mp4, {
   Album => 'Test Signals',
   Genre => 'Noise',
   Grouping => undef,
+  CoverArtCount => 1,
   CoverArt => '',
   Tempo => undef,
   Compilation => undef,
   Track => [1, 0],
   Disk => [0, 0],
 });
+
+is($mp4->GetMetadataFreeForm('mytag'), undef, 'GetMetadataFreeForm');
+
+my $tid = $mp4->FindTrackId(0);
+
+cmp_ok($tid, '!=', 0, "FindTrackId");
+
+cmp_ok(abs($mp4->GetTrackDuration($tid) - 0.227), '<', 0.001, "GetTrackDuration");;
+
+is($mp4->GetTrackBitRate($tid), 11682, "GetTrackBitRate");;
+
+is($mp4->GetTrackTimeScale($tid), 44100, "GetTrackTimeScale");;
 
 ok($mp4->Close, "Close");
 
@@ -57,12 +70,21 @@ ok($mp4->Modify($copy), "Modify($copy)");
 
 ok($mp4->DeleteMetadataDisk, "DeleteMetadataDisk");
 
+ok($mp4->DeleteMetadataCoverArt, "DeleteMetadataCoverArt");
+
 setmeta($mp4, {
   Name => '我能吞下玻璃而不伤身体',
   Comment => 'Testing MP4::File',
   Genre => 'Heavy Noise',
   Track => [1, 1],
 });
+
+ok($mp4->SetMetadataFreeForm('mytag', 'myfreeform'), 'SetMetadataFreeForm');
+
+ok($mp4->Close, "Close");
+
+ok(MP4::File->Optimize($copy), "Optimize");
+cmp_ok(-s $copy, '<', -s $file, "size of optimized file");
 
 ok($mp4->Read($copy), "Read");
 
@@ -76,12 +98,15 @@ checkmeta($mp4, {
   Album => 'Test Signals',
   Genre => 'Heavy Noise',
   Grouping => undef,
-  CoverArt => '',
+  CoverArtCount => 0,
+  CoverArt => undef,
   Tempo => undef,
   Compilation => undef,
   Track => [1, 1],
   Disk => [],
 });
+
+is($mp4->GetMetadataFreeForm('mytag'), 'myfreeform', 'GetMetadataFreeForm');
 
 sub setmeta
 {

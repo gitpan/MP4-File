@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 2 $
+#  $Revision: 3 $
 #  $Author: mhx $
-#  $Date: 2008/04/08 08:03:54 +0200 $
+#  $Date: 2008/04/20 17:31:39 +0200 $
 #
 ################################################################################
 # 
@@ -28,6 +28,5 @@ plan skip_all => "testing pod coverage requires Test::Pod::Coverage 1.08" if $@;
 plan tests => scalar @modules;
 
 for my $mod (@modules) {
-  # pod_coverage_ok($mod, "$mod is covered");
-  pass;
+  pod_coverage_ok($mod, "$mod is covered");
 }
