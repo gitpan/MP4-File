@@ -6,6 +6,7 @@ MANIFEST
 MANIFEST.SKIP
 ppport.h
 README
+support/Devel/CheckLib.pm
 t/mp4file.t
 t/pod.t
 t/podcov.t

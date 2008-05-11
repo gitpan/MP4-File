@@ -1,4 +1,11 @@
 -------------------------
+Version 0.07 (2008-05-11)
+-------------------------
+
+* it's hard to index something that we don't ship...
+  (forgot to include Devel::CheckLib in the package)
+
+-------------------------
 Version 0.06 (2008-05-11)
 -------------------------
 
