@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 6 $
+#  $Revision: 7 $
 #  $Author: mhx $
-#  $Date: 2008/05/11 04:17:43 +0200 $
+#  $Date: 2008/05/11 04:27:09 +0200 $
 #
 ################################################################################
 # 
@@ -45,7 +45,7 @@ sub configure
 
   if (eval $ExtUtils::MakeMaker::VERSION >= 6.30_01) {
     print "Setting license tag...\n";
-    push @moreopts, LICENSE => 'perl';
+    push @moreopts, LICENSE => 'perl',
                     EXTRA_META => <<'META';
 no_index:
     directory:
