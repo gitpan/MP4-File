@@ -1,8 +1,8 @@
 /*******************************************************************************
 *
-*  $Revision: 3 $
+*  $Revision: 4 $
 *  $Author: mhx $
-*  $Date: 2008/04/20 17:31:19 +0200 $
+*  $Date: 2008/05/11 04:24:57 +0200 $
 *
 ********************************************************************************
 *
@@ -82,7 +82,7 @@ MP4FILE::Read(fileName, verbosity = 0)
 
     THIS->fh = MP4Read(fileName, verbosity);
 
-    RETVAL = MP4_IS_VALID_FILE_HANDLE(THIS->fh);
+    RETVAL = (bool) MP4_IS_VALID_FILE_HANDLE(THIS->fh);
 
   OUTPUT:
     RETVAL
@@ -101,7 +101,7 @@ MP4FILE::Modify(fileName, verbosity = 0, flags = 0)
 
     THIS->fh = MP4Modify(fileName, verbosity, flags);
 
-    RETVAL = MP4_IS_VALID_FILE_HANDLE(THIS->fh);
+    RETVAL = (bool) MP4_IS_VALID_FILE_HANDLE(THIS->fh);
 
   OUTPUT:
     RETVAL
@@ -359,7 +359,7 @@ MP4FILE::GetMetadataCoverArt()
     {
       if (data != NULL)
       {
-        ST(0) = newSVpvn(data, length);
+        ST(0) = newSVpvn((const char *) data, length);
         free(data);
       }
       else
@@ -378,7 +378,7 @@ MP4FILE::SetMetadataCoverArt(cover)
 
   PREINIT:
     STRLEN length;
-    u_int8_t *data = SvPV(cover, length);
+    u_int8_t *data = (u_int8_t *) SvPV(cover, length);
 
   CODE:
     RETVAL = MP4SetMetadataCoverArt(THIS->fh, data, length);
@@ -501,7 +501,7 @@ MP4FILE::GetMetadataFreeForm(name)
     {
       if (value != NULL)
       {
-        ST(0) = newSVpvn(value, size);
+        ST(0) = newSVpvn((const char *) value, size);
         free(value);
       }
       else
@@ -521,7 +521,7 @@ MP4FILE::SetMetadataFreeForm(name, data)
 
   PREINIT:
     STRLEN size;
-    u_int8_t *value = SvPV(data, size);
+    u_int8_t *value = (u_int8_t *) SvPV(data, size);
 
   CODE:
     RETVAL = MP4SetMetadataFreeForm(THIS->fh, name, value, size);

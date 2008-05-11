@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                MP4-File
-version:             0.04
+version:             0.05
 abstract:            Read/Write MP4 files
 license:             perl
 author:              

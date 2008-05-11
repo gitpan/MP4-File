@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 5 $
+#  $Revision: 6 $
 #  $Author: mhx $
-#  $Date: 2008/04/20 23:37:09 +0200 $
+#  $Date: 2008/05/11 04:17:43 +0200 $
 #
 ################################################################################
 # 
@@ -15,9 +15,9 @@
 require 5.008;
 
 use strict;
+use lib 'support';
 use ExtUtils::MakeMaker;
-use IO::File;
-use Config;
+use Devel::CheckLib;
 
 my %prereq = (
   'Test::More' => '0.45',
@@ -46,54 +46,35 @@ sub configure
   if (eval $ExtUtils::MakeMaker::VERSION >= 6.30_01) {
     print "Setting license tag...\n";
     push @moreopts, LICENSE => 'perl';
+                    EXTRA_META => <<'META';
+no_index:
+    directory:
+        - support
+META
   }
 
-  print "Checking for a C compiler...\n";
+  print "Checking for a C compiler and libmp4v2...\n";
 
-  unless (test_compile(<<ENDC)) {
-int main() { return 0; }
-ENDC
-    die <<EOM;
+  eval { assert_lib(lib => 'mp4v2', header => 'mp4.h') };
 
-You don't seem to have a C compiler installed.
+  if ($@) {
+    warn <<EOM;
 
-This module cannot be built without a C compiler.
+$@
+There either is a problem with your C compiler or you
+don't have mpeg4ip or the mp4v2 library installed.
 
-EOM
-  }
-
-  print "Checking for libmp4v2 header...\n";
-
-  unless (test_compile(<<ENDC)) {
-#include <mp4.h>
-int main() { return 0; }
-ENDC
-    die <<EOM;
-
-You don't seem to have mpeg4ip or the mp4v2 library installed.
-
-Please make sure to install the mp4v2 library before attempting
-to build this module.
+This module cannot be built without a C compiler, and
+please make sure to install the mp4v2 library before
+attempting to build this module.
 
   http://mpeg4ip.net/
   http://resare.com/libmp4v2/
 
 EOM
+
+    exit 0;
   }
 
   return { @moreopts };
-}
-
-sub test_compile
-{
-  my $code = shift;
-  my $base = 'test';
-  my $file = "$base.c";
-  my $fh = IO::File->new(">$file") or die "$file: $!\n";
-  $fh->print($code);
-  undef $fh;
-  my $obj = "$base$Config{obj_ext}";
-  my $ok = not system "$Config{cc} $Config{ccflags} -o $obj $file";
-  unlink $file, $obj;
-  return $ok;
 }
