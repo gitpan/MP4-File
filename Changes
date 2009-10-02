@@ -1,4 +1,12 @@
 -------------------------
+Version 0.08 (2009-10-02)
+-------------------------
+
+* compatibility release for mp4v2-1.9
+
+* dropped support for FreeForm metadata
+
+-------------------------
 Version 0.07 (2008-05-11)
 -------------------------
 

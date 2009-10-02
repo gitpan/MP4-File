@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 7 $
+#  $Revision: 9 $
 #  $Author: mhx $
-#  $Date: 2008/05/11 04:27:09 +0200 $
+#  $Date: 2009/10/02 22:48:37 +0200 $
 #
 ################################################################################
 # 
@@ -45,19 +45,36 @@ sub configure
 
   if (eval $ExtUtils::MakeMaker::VERSION >= 6.30_01) {
     print "Setting license tag...\n";
-    push @moreopts, LICENSE => 'perl',
-                    EXTRA_META => <<'META';
+    push @moreopts, LICENSE => 'perl';
+    if (eval $ExtUtils::MakeMaker::VERSION >= 6.45_01) {
+      push @moreopts, META_MERGE => { no_index => { directory => [ 'support' ] } };
+    }
+    else {
+      push @moreopts, EXTRA_META => <<'META';
 no_index:
     directory:
         - support
 META
+    }
   }
 
   print "Checking for a C compiler and libmp4v2...\n";
 
-  eval { assert_lib(lib => 'mp4v2', header => 'mp4.h') };
+  my $inc;
 
-  if ($@) {
+  for my $hdr (qw( mp4v2/mp4v2.h mp4.h )) {
+    eval { assert_lib(lib => 'mp4v2', header => $hdr) };
+    unless ($@) {
+      $inc = $hdr;
+      last;
+    }
+  }
+
+  if ($inc) {
+    $inc =~ s/\W/_/g;
+    push @moreopts, DEFINE => "-DINCLUDE_\U$inc";
+  }
+  else {
     warn <<EOM;
 
 $@

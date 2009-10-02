@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 3 $
+#  $Revision: 4 $
 #  $Author: mhx $
-#  $Date: 2008/04/20 17:32:30 +0200 $
+#  $Date: 2009/10/02 22:35:00 +0200 $
 #
 ################################################################################
 # 
@@ -22,7 +22,7 @@ use Exporter;
 
 @ISA = qw( Exporter );
 
-$VERSION = do { my @r = '$Snapshot: /MP4-File/0.07 $' =~ /(\d+\.\d+(?:_\d+)?)/; @r ? $r[0] : '9.99' };
+$VERSION = do { my @r = '$Snapshot: /MP4-File/0.08 $' =~ /(\d+\.\d+(?:_\d+)?)/; @r ? $r[0] : '9.99' };
 $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
@@ -213,10 +213,6 @@ $type is one of the following constants that may be imported using:
 
   $ok = $mp4->DeleteMetadataCompilation()
 
-=head2 DeleteMetadataFreeForm
-
-  $ok = $mp4->DeleteMetadataFreeForm($name)
-
 =head2 GetMetadataName
 
   $string = $mp4->GetMetadataName()
@@ -277,10 +273,6 @@ $type is one of the following constants that may be imported using:
 
   $bool = $mp4->GetMetadataCompilation()
 
-=head2 GetMetadataFreeForm
-
-  $data = $mp4->GetMetadataFreeForm($name)
-
 =head2 SetMetadataName
 
   $ok = $mp4->SetMetadataName($string)
@@ -336,10 +328,6 @@ $type is one of the following constants that may be imported using:
 =head2 SetMetadataCompilation
 
   $ok = $mp4->SetMetadataCompilation($bool)
-
-=head2 SetMetadataFreeForm
-
-  $ok = $mp4->SetMetadataFreeForm($name, $data)
 
 =head1 AUTHOR
 

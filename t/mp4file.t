@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 3 $
+#  $Revision: 4 $
 #  $Author: mhx $
-#  $Date: 2008/04/20 17:31:48 +0200 $
+#  $Date: 2009/10/02 22:35:04 +0200 $
 #
 ################################################################################
 # 
@@ -12,7 +12,7 @@
 # 
 ################################################################################
 
-use Test::More tests => 52;
+use Test::More tests => 49;
 use File::Spec;
 use File::Copy;
 use Encode qw(encode decode);
@@ -48,8 +48,6 @@ checkmeta($mp4, {
   Disk => [0, 0],
 });
 
-is($mp4->GetMetadataFreeForm('mytag'), undef, 'GetMetadataFreeForm');
-
 my $tid = $mp4->FindTrackId(0);
 
 cmp_ok($tid, '!=', 0, "FindTrackId");
@@ -79,8 +77,6 @@ setmeta($mp4, {
   Track => [1, 1],
 });
 
-ok($mp4->SetMetadataFreeForm('mytag', 'myfreeform'), 'SetMetadataFreeForm');
-
 ok($mp4->Close, "Close");
 
 ok(MP4::File->Optimize($copy), "Optimize");
@@ -105,8 +101,6 @@ checkmeta($mp4, {
   Track => [1, 1],
   Disk => [],
 });
-
-is($mp4->GetMetadataFreeForm('mytag'), 'myfreeform', 'GetMetadataFreeForm');
 
 sub setmeta
 {

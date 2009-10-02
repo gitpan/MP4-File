@@ -1,8 +1,8 @@
 /*******************************************************************************
 *
-*  $Revision: 4 $
+*  $Revision: 5 $
 *  $Author: mhx $
-*  $Date: 2008/05/11 04:24:57 +0200 $
+*  $Date: 2009/10/02 22:34:53 +0200 $
 *
 ********************************************************************************
 *
@@ -19,7 +19,21 @@
 
 #include "ppport.h"
 
-#include <mp4.h>
+#if defined INCLUDE_MP4_H
+# include <mp4.h>
+#elif defined INCLUDE_MP4V2_MP4V2_H
+# include <mp4v2/mp4v2.h>
+#else
+# error "invalid configuration"
+#endif
+
+#if defined MP4V2_PROJECT_version_hex && MP4V2_PROJECT_version_hex >= 0x00010900
+# define LIBMP4V2_VERSION MP4V2_PROJECT_version_hex
+# define _v19ARG(arg)  , arg
+#else
+# define LIBMP4V2_VERSION 0x00010000
+# define _v19ARG(arg)
+#endif
 
 #define MP4FILE_CHARCONST(name) \
           (void) newCONSTSUB(ourstash, #name, newSVpvs(name))
@@ -34,7 +48,7 @@ typedef struct mp4file MP4FILE;
 
 MODULE=MP4::File     PACKAGE=MP4::File
 
-PROTOTYPES: ENABLE
+PROTOTYPES: DISABLE
 
 MP4FILE *
 MP4FILE::new()
@@ -57,17 +71,13 @@ MP4FILE::DESTROY()
 
 bool
 MP4FILE::Close()
-  CODE:
-    RETVAL = 0;
-
+  PPCODE:
     if (MP4_IS_VALID_FILE_HANDLE(THIS->fh))
     {
-      RETVAL = MP4Close(THIS->fh);
+      MP4Close(THIS->fh);
       THIS->fh = MP4_INVALID_FILE_HANDLE;
     }
-
-  OUTPUT:
-    RETVAL
+    XSRETURN_YES;
 
 bool
 MP4FILE::Read(fileName, verbosity = 0)
@@ -157,16 +167,12 @@ MP4FILE::GetVerbosity()
   OUTPUT:
     RETVAL
 
-bool
+void
 MP4FILE::SetVerbosity(verbosity)
     u_int32_t verbosity;
 
-  CODE:
-    RETVAL = MP4SetVerbosity(THIS->fh, verbosity);
-
-  OUTPUT:
-    RETVAL
-
+  PPCODE:
+    MP4SetVerbosity(THIS->fh, verbosity);
 
 MP4TrackId
 MP4FILE::FindTrackId(index, type = NULL, subType = 0)
@@ -349,13 +355,15 @@ MP4FILE::GetMetadataCoverArtCount()
     RETVAL
 
 void
-MP4FILE::GetMetadataCoverArt()
+MP4FILE::GetMetadataCoverArt(index = 0)
+    u_int32_t index
+
   PREINIT:
     u_int8_t *data;
     u_int32_t length;
 
   PPCODE:
-    if (MP4GetMetadataCoverArt(THIS->fh, &data, &length))
+    if (MP4GetMetadataCoverArt(THIS->fh, &data, &length _v19ARG(index)))
     {
       if (data != NULL)
       {
@@ -478,56 +486,6 @@ MP4FILE::SetMetadataCompilation(cpl)
   OUTPUT:
     RETVAL
 
-bool
-MP4FILE::DeleteMetadataFreeForm(name)
-    char *name
-
-  CODE:
-    RETVAL = MP4DeleteMetadataFreeForm(THIS->fh, name);
-
-  OUTPUT:
-    RETVAL
-
-void
-MP4FILE::GetMetadataFreeForm(name)
-    char *name
-
-  PREINIT:
-    u_int8_t *value;
-    u_int32_t size;
-
-  PPCODE:
-    if (MP4GetMetadataFreeForm(THIS->fh, name, &value, &size))
-    {
-      if (value != NULL)
-      {
-        ST(0) = newSVpvn((const char *) value, size);
-        free(value);
-      }
-      else
-      {
-        ST(0) = newSVpvn("", 0);
-      }
-
-      XSRETURN(1);
-    }
-
-    XSRETURN_UNDEF;
-
-bool
-MP4FILE::SetMetadataFreeForm(name, data)
-    char *name
-    SV *data
-
-  PREINIT:
-    STRLEN size;
-    u_int8_t *value = (u_int8_t *) SvPV(data, size);
-
-  CODE:
-    RETVAL = MP4SetMetadataFreeForm(THIS->fh, name, value, size);
-
-  OUTPUT:
-    RETVAL
 
 BOOT:
   {
